@@ -464,8 +464,8 @@ class EntityAPITestCase extends EntityWebTestCase {
     );
     field_create_instance($instance);
 
-    $info = entity_get_info('entity_test_type');
-    $path = $info['admin ui']['path'];
+    $info = entity_get_info('entity_test');
+    $path = $info['bundles'][$entity_name]['admin']['path'];
     $this->drupalGet("$path/manage/$entity_name/fields/$field_name");
     $this->assertNoText('Page not found', "Field UI works for 'bundle of' property");
   }
