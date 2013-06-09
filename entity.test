@@ -390,7 +390,7 @@ class EntityAPITestCase extends EntityWebTestCase {
     // @todo DEBUG
     $this->pass(print_r($types, TRUE));
     // Override the default entity, such it gets saved in the DB.
-    $types['test']->label ='test_changes';
+    $types['test']->label = 'test_changes';
     $types['test']->save();
 
     // Now test an update without applying any changes.
