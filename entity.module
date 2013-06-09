@@ -1146,11 +1146,19 @@ function entity_menu_alter(&$items) {
       'fields/%field_ui_menu/delete',
     );
     foreach (entity_get_info() as $entity_type => $entity_info) {
-      $bundle_type = entity_type_get_bundle_type($entity_type);
-      if ($entity_type !== $bundle_type) {
-        $path = $entity_info['admin ui']['path'];
-        foreach ($path_ends as $path_end) {
-          $items["$path/$path_end"]['load arguments'][0] = $bundle_type;
+      if ($entity_info['fieldable']) {
+        foreach ($entity_info['bundles'] as $bundle_name => $bundle_info) {
+          if (isset($bundle_info['admin'])) {
+            // Extract path information from the bundle.
+            $path = $bundle_info['admin']['path'];
+            // Determne real type of the bundle.
+            $bundle_type = entity_type_get_bundle_type($entity_type);
+            if ($entity_type !== $bundle_type) {
+              foreach ($path_ends as $path_end) {
+                $items["$path/$path_end"]['load arguments'][0] = $bundle_type;
+              }
+            }
+          }
         }
       }
     }
