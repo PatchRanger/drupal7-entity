@@ -384,8 +384,11 @@ class EntityAPITestCase extends EntityWebTestCase {
    */
   function testChanges() {
     module_enable(array('entity_feature'));
+    // @todo DEBUG
+    $this->assertTrue(module_exists('entity_feature'), 'Feature enabled');
     $types = entity_load_multiple_by_name('entity_test_type');
-
+    // @todo DEBUG
+    $this->pass(print_r($types, TRUE));
     // Override the default entity, such it gets saved in the DB.
     $types['test']->label ='test_changes';
     $types['test']->save();
