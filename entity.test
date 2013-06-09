@@ -56,6 +56,11 @@ class EntityAPITestCase extends EntityWebTestCase {
 
   function setUp() {
     parent::setUp('entity', 'entity_test');
+    // Avoid overlapping among test cases.
+    $entity_types = array_keys(entity_get_info());
+    foreach ($entity_types as $entity_type) {
+      entity_get_controller($entity_type)->resetCache();
+    }
   }
 
   /**
