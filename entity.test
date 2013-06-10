@@ -384,10 +384,13 @@ class EntityAPITestCase extends EntityWebTestCase {
    */
   function testChanges() {
     module_enable(array('entity_feature'));
+    // @todo DEBUG
+    $this->assertTrue(module_exists('entity_feature'), 'Feature enabled');
     $types = entity_load_multiple_by_name('entity_test_type');
-
+    // @todo DEBUG
+    $this->pass(print_r($types, TRUE));
     // Override the default entity, such it gets saved in the DB.
-    $types['test']->label ='test_changes';
+    $types['test']->label = 'test_changes';
     $types['test']->save();
 
     // Now test an update without applying any changes.
@@ -423,6 +426,51 @@ class EntityAPITestCase extends EntityWebTestCase {
     $output = drupal_render($render);
     // The entity class adds the user name to the output. Verify it is there.
     $this->assertTrue(strpos($output, format_username($user1)) !== FALSE, 'Entity has been rendered');
+  }
+
+  /**
+   * Test correct work of 'bundle of' property.
+   * Create an entity of type 'entity_test_type' (which has 'bundle of' property
+   * set to 'entity_test'), create a field for it and then try to visit a page,
+   * provided by Field UI.
+   */
+  function testBundleOf() {
+    module_enable(array('field_ui'));
+
+    $entity_name = 'test';
+    $test_type = entity_create('entity_test_type', array(
+      'name' => $entity_name,
+      'label' => 'label',
+      'weight' => 0,
+    ));
+    $test_type->save();
+
+    $field_name = 'field_test_fullname';
+    $field = array(
+      'field_name' => $field_name,
+      'type' => 'text',
+      'cardinality' => 1,
+      'translatable' => FALSE,
+    );
+    field_create_field($field);
+
+    $instance = array(
+      'entity_type' => 'entity_test',
+      'field_name' => 'field_test_fullname',
+      'bundle' => 'test',
+      'label' => 'Full name',
+      'description' => 'Specify your first and last name.',
+      'widget' => array(
+        'type' => 'text_textfield',
+        'weight' => 0,
+      ),
+    );
+    field_create_instance($instance);
+
+    $info = entity_get_info('entity_test');
+    $path = $info['bundles'][$entity_name]['admin']['path'];
+    $this->drupalGet("$path/manage/$entity_name/fields/$field_name");
+    $this->assertNoText('Page not found', "Field UI works for 'bundle of' property");
   }
 
   /**
