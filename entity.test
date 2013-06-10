@@ -56,11 +56,6 @@ class EntityAPITestCase extends EntityWebTestCase {
 
   function setUp() {
     parent::setUp('entity', 'entity_test');
-    // Avoid overlapping among test cases.
-    $entity_types = array_keys(entity_get_info());
-    foreach ($entity_types as $entity_type) {
-      entity_get_controller($entity_type)->resetCache();
-    }
   }
 
   /**
@@ -249,102 +244,6 @@ class EntityAPITestCase extends EntityWebTestCase {
   }
 
   /**
-   * Tests determining changes.
-   */
-  function testChanges() {
-    module_enable(array('entity_feature'));
-    // @todo DEBUG
-    $this->assertTrue(module_exists('entity_feature'), 'Feature enabled');
-    // We should reset due to changes done in other test cases.
-    $types = entity_load('entity_test_type', FALSE, array(), TRUE);
-    //$types = entity_load_multiple_by_name('entity_test_type');
-    // @todo DEBUG
-    $this->pass(print_r($types, TRUE));
-    // Override the default entity, such it gets saved in the DB.
-    $types['test']->label = 'test_changes';
-    $types['test']->save();
-
-    // Now test an update without applying any changes.
-    $types['test']->save();
-    $this->assertEqual($types['test']->label, 'test_changes', 'No changes have been determined.');
-
-    // Apply changes.
-    $types['test']->label = 'updated';
-    $types['test']->save();
-
-    // The hook implementations entity_test_entity_test_type_presave() and
-    // entity_test_entity_test_type_update() determine changes and change the
-    // label.
-    $this->assertEqual($types['test']->label, 'updated_presave_update', 'Changes have been determined.');
-
-    // Test the static load cache to be cleared.
-    $types = entity_load_multiple_by_name('entity_test_type');
-    $this->assertEqual($types['test']->label, 'updated_presave', 'Static cache has been cleared.');
-  }
-
-
-  /**
-   * Tests viewing entites.
-   */
-  function testRendering() {
-    module_enable(array('entity_feature'));
-
-    $user1 = $this->drupalCreateUser();
-    // Create test entities for the user1 and unrelated to a user.
-    $entity = entity_create('entity_test', array('name' => 'test', 'uid' => $user1->uid));
-
-    $render = $entity->view();
-    $output = drupal_render($render);
-    // The entity class adds the user name to the output. Verify it is there.
-    $this->assertTrue(strpos($output, format_username($user1)) !== FALSE, 'Entity has been rendered');
-  }
-
-  /**
-   * Test correct work of 'bundle of' property.
-   * Create an entity of type 'entity_test_type' (which has 'bundle of' property
-   * set to 'entity_test'), create a field for it and then try to visit a page,
-   * provided by Field UI.
-   */
-  function testBundleOf() {
-    module_enable(array('field_ui'));
-
-    $entity_name = 'test';
-    $test_type = entity_create('entity_test_type', array(
-      'name' => $entity_name,
-      'label' => 'label',
-      'weight' => 0,
-    ));
-    $test_type->save();
-
-    $field_name = 'field_test_fullname';
-    $field = array(
-      'field_name' => $field_name,
-      'type' => 'text',
-      'cardinality' => 1,
-      'translatable' => FALSE,
-    );
-    field_create_field($field);
-
-    $instance = array(
-      'entity_type' => 'entity_test',
-      'field_name' => 'field_test_fullname',
-      'bundle' => 'test',
-      'label' => 'Full name',
-      'description' => 'Specify your first and last name.',
-      'widget' => array(
-        'type' => 'text_textfield',
-        'weight' => 0,
-      ),
-    );
-    field_create_instance($instance);
-
-    $info = entity_get_info('entity_test');
-    $path = $info['bundles'][$entity_name]['admin']['path'];
-    $this->drupalGet("$path/manage/$entity_name/fields/$field_name");
-    $this->assertNoText('Page not found', "Field UI works for 'bundle of' property");
-  }
-
-  /**
    * Test loading entities defined in code.
    */
   function testExportables() {
@@ -478,6 +377,52 @@ class EntityAPITestCase extends EntityWebTestCase {
     $delete[] = 'test3';
     $this->assertTrue($_SESSION['entity_hook_test']['entity_delete'] == $delete, 'Hook entity_deleted has been invoked.');
     $this->assertTrue($_SESSION['entity_hook_test']['entity_test_type_delete'] == $delete, 'Hook entity_test_type_deleted has been invoked.');
+  }
+
+  /**
+   * Tests determining changes.
+   */
+  function testChanges() {
+    module_enable(array('entity_feature'));
+    $types = entity_load_multiple_by_name('entity_test_type');
+
+    // Override the default entity, such it gets saved in the DB.
+    $types['test']->label ='test_changes';
+    $types['test']->save();
+
+    // Now test an update without applying any changes.
+    $types['test']->save();
+    $this->assertEqual($types['test']->label, 'test_changes', 'No changes have been determined.');
+
+    // Apply changes.
+    $types['test']->label = 'updated';
+    $types['test']->save();
+
+    // The hook implementations entity_test_entity_test_type_presave() and
+    // entity_test_entity_test_type_update() determine changes and change the
+    // label.
+    $this->assertEqual($types['test']->label, 'updated_presave_update', 'Changes have been determined.');
+
+    // Test the static load cache to be cleared.
+    $types = entity_load_multiple_by_name('entity_test_type');
+    $this->assertEqual($types['test']->label, 'updated_presave', 'Static cache has been cleared.');
+  }
+
+
+  /**
+   * Tests viewing entites.
+   */
+  function testRendering() {
+    module_enable(array('entity_feature'));
+
+    $user1 = $this->drupalCreateUser();
+    // Create test entities for the user1 and unrelated to a user.
+    $entity = entity_create('entity_test', array('name' => 'test', 'uid' => $user1->uid));
+
+    $render = $entity->view();
+    $output = drupal_render($render);
+    // The entity class adds the user name to the output. Verify it is there.
+    $this->assertTrue(strpos($output, format_username($user1)) !== FALSE, 'Entity has been rendered');
   }
 
   /**
