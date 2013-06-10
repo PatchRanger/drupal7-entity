@@ -109,7 +109,11 @@ function entity_type_supports($entity_type, $op) {
  *   A fully loaded entity object, or FALSE in case of error.
  */
 function entity_object_load($entity_id, $entity_type) {
-  $entities = entity_load($entity_type, array($entity_id));
+  // Some modules (e.g., Field UI) implicitly assume that type of a bundle equals
+  // entity type, which it belongs to. It is wrong in case if 'bundle of' property
+  // is set. In order to fix this behavior, we ensure that we load entities of
+  // type we really need.
+  $entities = entity_load(entity_type_get_bundle_type($entity_type), array($entity_id));
   return reset($entities);
 }
 
@@ -1080,41 +1084,6 @@ function entity_menu() {
     $items += $controller->hook_menu();
   }
   return $items;
-}
-
-/**
- * Implements hook_menu_alter().
- */
-function entity_menu_alter(&$items) {
-  // Field UI implicitly assumes that type of a bundle equals entity type, which
-  // it belongs to. It is wrong in case if 'bundle of' property is set. In order
-  // to fix this behavior, we alter menu definitions.
-  if (module_exists('field_ui')) {
-    $path_ends = array(
-      'fields/%field_ui_menu',
-      'fields/%field_ui_menu/edit',
-      'fields/%field_ui_menu/field-settings',
-      'fields/%field_ui_menu/widget-type',
-      'fields/%field_ui_menu/delete',
-    );
-    foreach (entity_get_info() as $entity_type => $entity_info) {
-      if ($entity_info['fieldable']) {
-        foreach ($entity_info['bundles'] as $bundle_name => $bundle_info) {
-          if (isset($bundle_info['admin'])) {
-            // Extract path information from the bundle.
-            $path = $bundle_info['admin']['path'];
-            // Determne real type of the bundle.
-            $bundle_type = entity_type_get_bundle_type($entity_type);
-            if ($entity_type !== $bundle_type) {
-              foreach ($path_ends as $path_end) {
-                $items["$path/$path_end"]['load arguments'][0] = $bundle_type;
-              }
-            }
-          }
-        }
-      }
-    }
-  }
 }
 
 /**
