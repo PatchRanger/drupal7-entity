@@ -1634,7 +1634,7 @@ class EntityAdminTestCase extends EntityWebTestCase {
   }
 
   public function setUp() {
-    parent::setUp(array('entity', 'entity_test', 'entity_feature'));
+    parent::setUp(array('entity', 'entity_test', 'entity_feature', 'field_ui'));
     $this->admin_user = $this->drupalCreateUser(array(
       'bypass node access',
       'administer site configuration',
@@ -1643,6 +1643,7 @@ class EntityAdminTestCase extends EntityWebTestCase {
       'administer blocks',
       'access administration pages',
     ));
+    $this->drupalLogin($this->admin_user);
   }
 
   /**
@@ -1652,10 +1653,6 @@ class EntityAdminTestCase extends EntityWebTestCase {
    * provided by Field UI.
    */
   function testBundleOf() {
-    module_enable(array('field_ui'));
-
-    $this->drupalLogin($this->admin_user);
-
     $entity_name = 'test_bundle_of';
     $test_type = entity_create('entity_test_type', array(
       'name' => $entity_name,
