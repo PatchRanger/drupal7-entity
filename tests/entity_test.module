@@ -30,6 +30,9 @@ function entity_test_entity_info() {
         'bundle' => 'name',
       ),
       'module' => 'entity_test',
+      'admin ui' => array(
+        'path' => 'admin/structure/entity_tests',
+      ),
     ),
     'entity_test_type' => array(
       'label' => t('Test entity type'),
@@ -44,6 +47,9 @@ function entity_test_entity_info() {
         'name' => 'name',
       ),
       'module' => 'entity_test',
+      'admin ui' => array(
+        'path' => 'admin/structure/entity_test_types',
+      ),
     ),
 
     'entity_test2' => array(
@@ -63,6 +69,10 @@ function entity_test_entity_info() {
       'bundles' => array(),
       'bundle keys' => array(
         'bundle' => 'name',
+      ),
+      'module' => 'entity_test',
+      'admin ui' => array(
+        'path' => 'admin/structure/entity_test2s',
       ),
     ),
   );
