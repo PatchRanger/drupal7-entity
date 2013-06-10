@@ -1639,7 +1639,6 @@ class EntityAdminTestCase extends EntityWebTestCase {
       'bypass node access',
       'administer site configuration',
       'administer nodes',
-      'administer languages',
       'administer content types',
       'administer blocks',
       'access administration pages',
