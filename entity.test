@@ -1644,7 +1644,6 @@ class EntityAdminTestCase extends EntityWebTestCase {
       'administer blocks',
       'access administration pages',
     ));
-    $this->drupalLogin($this->admin_user);
   }
 
   /**
@@ -1655,6 +1654,8 @@ class EntityAdminTestCase extends EntityWebTestCase {
    */
   function testBundleOf() {
     module_enable(array('field_ui'));
+
+    $this->drupalLogin($this->admin_user);
 
     $entity_name = 'test';
     $test_type = entity_create('entity_test_type', array(
