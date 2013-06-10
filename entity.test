@@ -1656,7 +1656,7 @@ class EntityAdminTestCase extends EntityWebTestCase {
 
     $this->drupalLogin($this->admin_user);
 
-    $entity_name = 'test';
+    $entity_name = 'test_bundle_of';
     $test_type = entity_create('entity_test_type', array(
       'name' => $entity_name,
       'label' => 'label',
