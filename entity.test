@@ -1673,7 +1673,7 @@ class EntityAdminTestCase extends EntityWebTestCase {
     $instance = array(
       'entity_type' => 'entity_test',
       'field_name' => 'field_test_fullname',
-      'bundle' => 'test',
+      'bundle' => $entity_name,
       'label' => 'Full name',
       'description' => 'Specify your first and last name.',
       'widget' => array(

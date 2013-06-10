@@ -25,6 +25,7 @@ function entity_test_entity_info() {
       // Make use the class' label() and uri() implementation by default.
       'label callback' => 'entity_class_label',
       'uri callback' => 'entity_class_uri',
+      'access callback' => 'entity_test_access',
       'bundles' => array(),
       'bundle keys' => array(
         'bundle' => 'name',
@@ -46,6 +47,7 @@ function entity_test_entity_info() {
         'id' => 'id',
         'name' => 'name',
       ),
+      'access callback' => 'entity_test_access',
       'module' => 'entity_test',
       'admin ui' => array(
         'path' => 'admin/structure/entity_test_types',
@@ -66,6 +68,7 @@ function entity_test_entity_info() {
       // Make use of the class label() and uri() implementation by default.
       'label callback' => 'entity_class_label',
       'uri callback' => 'entity_class_uri',
+      'access callback' => 'entity_test_access',
       'bundles' => array(),
       'bundle keys' => array(
         'bundle' => 'name',
@@ -292,4 +295,16 @@ function entity_test_entity_getter($node) {
 function entity_test_entity_setter($node, $property_name, $wrapper) {
   // The entity has to be passed wrapped.
   $node->entity = array('type' => $wrapper->type(), 'id' => $wrapper->getIdentifier());
+}
+
+/**
+ * Access callback.
+ *
+ * @param string $op
+ * @param Entity $entity
+ * @param type $account
+ * @return boolean
+ */
+function entity_test_access($op, $entity = NULL, $account = NULL, $entity_type = NULL) {
+  return user_access('administer site configuration');
 }
