@@ -1688,7 +1688,7 @@ class EntityAdminTestCase extends EntityWebTestCase {
 
     $info = entity_get_info('entity_test');
     $path = $info['bundles'][$entity_name]['admin']['real path'];
-    $this->drupalGet("$path/manage/$entity_name/fields/$field_name");
+    $this->drupalGet("$path/fields/$field_name");
     $this->assertNoText('Page not found', "Field UI works for 'bundle of' property");
   }
 }
