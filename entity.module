@@ -1401,7 +1401,7 @@ function entity_entity_info_alter(&$entity_info) {
             // Create a wildcard with respect to entity type preferences.
             'path' => $info['admin ui']['path'] . '/manage/' . entity_get_wildcard($info),
             'real path' => $info['admin ui']['path'] . '/manage/' . $bundle_name,
-            'bundle argument' => count(explode($info['admin ui']['path'])) + 1,
+            'bundle argument' => count(explode('/', $info['admin ui']['path'])) + 1,
           ),
         );
       }
