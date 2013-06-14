@@ -56,11 +56,11 @@ class EntityAPITestCase extends EntityWebTestCase {
 
   function setUp() {
     parent::setUp('entity', 'entity_test');
-
     // For testExportableHooks test case.
     $_SESSION['entity_hook_test'] = array();
-
     module_enable(array('entity_feature'));
+    // Reset feature.
+    $this->resetAll();
   }
 
   /**
