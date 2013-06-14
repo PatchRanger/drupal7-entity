@@ -80,23 +80,6 @@ function entity_test_entity_info() {
     ),
   );
 
-  // Add bundle info but bypass entity_load() as we cannot use it here.
-  $types = db_select('entity_test_type', 'et')
-    ->fields('et')
-    ->execute()
-    ->fetchAllAssoc('name');
-
-  foreach ($types as $name => $type) {
-    $return['entity_test']['bundles'][$name] = array(
-      'label' => $type->label,
-      'admin' => array(
-        'path' => 'admin/structure/entity_test_types/manage/%entity_object',
-        'real path' => 'admin/structure/entity_test_types/manage/' . $name,
-        'bundle argument' => 4,
-      ),
-    );
-  }
-
   // Support entity cache module.
   if (module_exists('entitycache')) {
     $return['entity_test']['field cache'] = FALSE;
