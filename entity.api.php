@@ -38,6 +38,7 @@
  *   field_attach_delete_bundle() has to be invoked manually upon module
  *   uninstallation. See entity_test_entity_info() and entity_test_uninstall()
  *   for examples.
+ *   This property impacts on 'menu wildcard'.
  * - module: (optional) The module providing the entity type. This is optional,
  *   but strongly suggested.
  * - exportable: (optional) Whether the entity is exportable. Defaults to FALSE.
@@ -104,7 +105,8 @@
  *     not set, it defaults to entity type's module's path, thus the entity
  *     types 'module' key is required.
  *   - menu wildcard: The wildcard to use in paths of the hook_menu() items.
- *     Defaults to %entity_object which is the loader provided by Entity API.
+ *     Defaults to the loader provided by Entity API: either %entity_object or
+ *     %entity_type if 'bundle of' property is set.
  * - rules controller class: (optional) A controller class for providing Rules
  *   integration, or FALSE to disable this feature. The given class has to
  *   inherit from the class EntityDefaultRulesController, which serves as

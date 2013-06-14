@@ -109,10 +109,21 @@ function entity_type_supports($entity_type, $op) {
  *   A fully loaded entity object, or FALSE in case of error.
  */
 function entity_object_load($entity_id, $entity_type) {
-  // Some modules (e.g., Field UI) implicitly assume that type of a bundle equals
-  // entity type, which it belongs to. It is wrong in case if 'bundle of' property
-  // is set. In order to fix this behavior, we ensure that we load entities of
-  // type we really need.
+  $entities = entity_load($entity_type, array($entity_id));
+  return reset($entities);
+}
+
+/**
+ * Menu loader function: load an entity from its path.
+ *
+ * Some modules (e.g., Field UI) implicitly assume that type of a bundle equals
+ * entity type, which it belongs to. It is wrong in case if 'bundle of' property
+ * is set. In order to fix this behavior, we ensure that we load entities of
+ * type set by 'bundle of' property.
+ *
+ * @see entity_object_load()
+ */
+function entity_type_load($entity_id, $entity_type) {
   $entities = entity_load(entity_type_get_bundle_type($entity_type), array($entity_id));
   return reset($entities);
 }
@@ -1381,6 +1392,20 @@ function entity_entity_info_alter(&$entity_info) {
     if (!isset($info['configuration'])) {
       $entity_info[$type]['configuration'] = !empty($info['exportable']);
     }
+    // Add bundles for entities that declared in 'bundle of' property of another.
+    if (!empty($info['bundle of']) && !empty($info['admin ui']['path'])) {
+      foreach (entity_load_multiple_by_name($type) as $bundle_name => $bundle) {
+        $entity_info[$info['bundle of']]['bundles'][$bundle_name] = array(
+          'label' => $bundle->label,
+          'admin' => array(
+            // Create a wildcard with respect to entity type preferences.
+            'path' => $info['admin ui']['path'] . '/manage/' . entity_get_wildcard($info),
+            'real path' => $info['admin ui']['path'] . '/manage/' . $bundle_name,
+            'bundle argument' => count(explode($info['admin ui']['path'])) + 1,
+          ),
+        );
+      }
+    }
   }
 }
 
@@ -1465,4 +1490,25 @@ function entity_ctools_plugin_directory($module, $plugin) {
   if ($module == 'ctools' && $plugin == 'content_types') {
     return 'ctools/content_types';
   }
+}
+
+/**
+ * Helper function to get a menu wildcard.
+ *
+ * @param Array $entity_info
+ *   An array of entity type declaration as got from hook_entity_info().
+ * @return string
+ *   A correct wildcard for input entity info.
+ */
+function entity_get_wildcard($entity_info) {
+  if (isset($entity_info['admin ui']['menu wildcard'])) {
+    $wildcard = $entity_info['admin ui']['menu wildcard'];
+  }
+  elseif (isset($entity_info['bundle of'])) {
+    $wildcard = '%entity_type';
+  }
+  else {
+    $wildcard = '%entity_object';
+  }
+  return $wildcard;
 }

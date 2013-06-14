@@ -132,7 +132,7 @@ class EntityDefaultI18nStringController {
    * Go with the same default values as the admin UI as far as possible.
    */
   public function hook_object_info() {
-    $wildcard = $this->menuWildcard();
+    $wildcard = entity_get_wildcard($this->entityInfo);
     $id_key = !empty($this->entityInfo['entity keys']['name']) ? $this->entityInfo['entity keys']['name'] : $this->entityInfo['entity keys']['id'];
 
     $info[$this->entityType] = array(
@@ -180,10 +180,13 @@ class EntityDefaultI18nStringController {
   }
 
   /**
+   * Deprecated: use entity_get_wildcard() instead.
    * Defines the menu wildcard used by self::hook_object_info().
+   *
+   * @see entity_get_wildcard()
    */
   protected function menuWildcard() {
-    return isset($this->entityInfo['admin ui']['menu wildcard']) ? $this->entityInfo['admin ui']['menu wildcard'] : '%entity_object';
+    return entity_get_wildcard($this->entityInfo);
   }
 
   /**

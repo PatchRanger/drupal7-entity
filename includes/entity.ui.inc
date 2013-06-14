@@ -32,7 +32,7 @@ class EntityDefaultUIController {
     $items = array();
     // Set this on the object so classes that extend hook_menu() can use it.
     $this->id_count = count(explode('/', $this->path));
-    $wildcard = isset($this->entityInfo['admin ui']['menu wildcard']) ? $this->entityInfo['admin ui']['menu wildcard'] : '%entity_object';
+    $wildcard = entity_get_wildcard($this->entityInfo);
     $plural_label = isset($this->entityInfo['plural label']) ? $this->entityInfo['plural label'] : $this->entityInfo['label'] . 's';
 
     $items[$this->path] = array(
