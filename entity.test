@@ -55,6 +55,9 @@ class EntityAPITestCase extends EntityWebTestCase {
   }
 
   function setUp() {
+    // For testExportableHooks test case.
+    $_SESSION['entity_hook_test'] = array();
+
     parent::setUp('entity', 'entity_test', 'entity_feature');
   }
 
@@ -316,13 +319,10 @@ class EntityAPITestCase extends EntityWebTestCase {
 
   /**
    * Make sure insert() and update() hooks for exportables are invoked.
+   * Enabling the 'entity_feature' module should invoke the enabled
+   * hook for the other entities provided in code.
    */
   function testExportableHooks() {
-    $_SESSION['entity_hook_test'] = array();
-    // Enabling the module should invoke the enabled hook for the other
-    // entities provided in code.
-    //module_enable(array('entity_feature'));
-
     $insert = array('main', 'test', 'test2');
     $this->assertTrue($_SESSION['entity_hook_test']['entity_insert'] == $insert, 'Hook entity_insert has been invoked.');
     $this->assertTrue($_SESSION['entity_hook_test']['entity_test_type_insert'] == $insert, 'Hook entity_test_type_insert has been invoked.');
