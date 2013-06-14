@@ -56,17 +56,14 @@ class EntityAPITestCase extends EntityWebTestCase {
 
   function setUp() {
     parent::setUp('entity', 'entity_test');
-    // For testExportableHooks test case.
-    module_enable(array('entity_feature'));
-    $_SESSION['entity_hook_test'] = array();
-    // Reset feature.
-    $this->resetAll();
   }
 
   /**
    * Tests CRUD.
    */
   function testCRUD() {
+    module_enable(array('entity_feature'));
+
     $user1 = $this->drupalCreateUser();
     // Create test entities for the user1 and unrelated to a user.
     $entity = entity_create('entity_test', array('name' => 'test', 'uid' => $user1->uid));
@@ -102,6 +99,8 @@ class EntityAPITestCase extends EntityWebTestCase {
    * Tests CRUD for entities supporting revisions.
    */
   function testCRUDRevisisions() {
+    module_enable(array('entity_feature'));
+
     // Add text field to entity.
     $field_info = array(
       'field_name' => 'field_text',
@@ -207,6 +206,8 @@ class EntityAPITestCase extends EntityWebTestCase {
    * Tests CRUD API functions: entity_(create|delete|save)
    */
   function testCRUDAPIfunctions() {
+    module_enable(array('entity_feature'));
+
     $user1 = $this->drupalCreateUser();
     // Create test entities for the user1 and unrelated to a user.
     $entity = entity_create('entity_test', array('name' => 'test', 'uid' => $user1->uid));
@@ -246,6 +247,8 @@ class EntityAPITestCase extends EntityWebTestCase {
    * Test loading entities defined in code.
    */
   function testExportables() {
+    module_enable(array('entity_feature'));
+
     $types = entity_load_multiple_by_name('entity_test_type', array('test2', 'test'));
 
     $this->assertEqual(array_keys($types), array('test2', 'test'), 'Entities have been loaded in the order as specified.');
@@ -321,10 +324,14 @@ class EntityAPITestCase extends EntityWebTestCase {
 
   /**
    * Make sure insert() and update() hooks for exportables are invoked.
-   * Enabling the 'entity_feature' module should invoke the enabled
-   * hook for the other entities provided in code.
    */
   function testExportableHooks() {
+    $_SESSION['entity_hook_test'] = array();
+
+    // Enabling the 'entity_feature' module should invoke the enabled hook
+    // for the other entities provided in code.
+    module_enable(array('entity_feature'));
+
     $insert = array('main', 'test', 'test2');
     $this->assertTrue($_SESSION['entity_hook_test']['entity_insert'] == $insert, 'Hook entity_insert has been invoked.');
     $this->assertTrue($_SESSION['entity_hook_test']['entity_test_type_insert'] == $insert, 'Hook entity_test_type_insert has been invoked.');
@@ -377,6 +384,8 @@ class EntityAPITestCase extends EntityWebTestCase {
    * Tests determining changes.
    */
   function testChanges() {
+    module_enable(array('entity_feature'));
+
     $types = entity_load_multiple_by_name('entity_test_type');
 
     // Override the default entity, such it gets saved in the DB.
