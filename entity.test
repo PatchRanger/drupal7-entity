@@ -55,10 +55,12 @@ class EntityAPITestCase extends EntityWebTestCase {
   }
 
   function setUp() {
+    parent::setUp('entity', 'entity_test');
+
     // For testExportableHooks test case.
     $_SESSION['entity_hook_test'] = array();
 
-    parent::setUp('entity', 'entity_test', 'entity_feature');
+    module_enable(array('entity_feature'));
   }
 
   /**
