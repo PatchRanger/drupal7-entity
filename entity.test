@@ -1683,9 +1683,14 @@ class EntityAdminTestCase extends EntityWebTestCase {
     );
     field_create_instance($instance);
 
+    // Check 'bundle of' property handling.
     $info = entity_get_info('entity_test');
     $path = $info['bundles'][$entity_name]['admin']['real path'];
     $this->drupalGet("$path/fields/$field_name");
     $this->assertNoText('Page not found', "Field UI works for 'bundle of' property");
+
+    // Ensure that bundle created for entity_test (it should, because entity_test_type
+    // has 'bundle of' property set to entity_test).
+    $this->assertTrue(!empty($info['bundles'][$entity_name]), "Bundle is created for entity type that is set as 'bundle of' property for another entity type");
   }
 }
