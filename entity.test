@@ -382,7 +382,7 @@ class EntityAPITestCase extends EntityWebTestCase {
 
   /**
    * Tests determining changes.
-   */
+   *\/
   function testChanges() {
     module_enable(array('entity_feature'));
 
