@@ -12,5 +12,8 @@
  * cached changes each time.
  */
 function entity_feature_enable() {
-  entity_get_controller('entity_test_type')->resetCache();
+  // Reset all static variables.
+  drupal_static_reset();
+  // Perform rebuilds and flush remaining caches.
+  drupal_flush_all_caches();
 }
