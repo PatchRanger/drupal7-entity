@@ -1654,13 +1654,7 @@ class EntityAdminTestCase extends EntityWebTestCase {
    * provided by Field UI.
    */
   function testBundleOf() {
-    $entity_name = 'test_bundle_of';
-    $test_type = entity_create('entity_test_type', array(
-      'name' => $entity_name,
-      'label' => 'label',
-      'weight' => 0,
-    ));
-    $test_type->save();
+    $entity_name = 'test';
 
     $field_name = 'field_test_fullname';
     $field = array(
