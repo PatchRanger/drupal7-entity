@@ -162,3 +162,13 @@ function entity_test_schema() {
   return $schema;
 }
 
+/**
+ * Implements hook_enable().
+ *
+ * During tests we are doing whatever we want with entities
+ * packed in feature - so it is reasonable to reset any
+ * cached changes each time.
+ */
+function entity_test_enable() {
+  entity_get_controller('entity_test_type')->resetCache();
+}
