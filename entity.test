@@ -415,6 +415,8 @@ class EntityAPITestCase extends EntityWebTestCase {
    * Tests viewing entites.
    */
   function testRendering() {
+    module_enable(array('entity_feature'));
+
     $user1 = $this->drupalCreateUser();
     // Create test entities for the user1 and unrelated to a user.
     $entity = entity_create('entity_test', array('name' => 'test', 'uid' => $user1->uid));
