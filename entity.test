@@ -385,6 +385,8 @@ class EntityAPITestCase extends EntityWebTestCase {
    */
   function testChanges() {
     module_enable(array('entity_feature'));
+    // Reset cache for the feature.
+    entity_get_controller('entity_test_type')->resetCache();
 
     $types = entity_load_multiple_by_name('entity_test_type');
 
